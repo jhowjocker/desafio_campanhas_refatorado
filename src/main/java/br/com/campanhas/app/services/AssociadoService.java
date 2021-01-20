@@ -59,7 +59,7 @@ public class AssociadoService {
     }
 
     public void verificaNomeAssociado(String nomeAssociado) {
-        Associado associado = associadoRepository.findByNomeCompletoAssociadoIgnoreCase(nomeAssociado);
+        Associado associado = associadoRepository.findByNomeCompletoIgnoreCase(nomeAssociado);
 
         if (Objects.nonNull(associado)) {
             throw new AssociadoDuplicadoException("Cadastro existente!");

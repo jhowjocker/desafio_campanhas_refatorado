@@ -6,10 +6,7 @@ import java.util.*;
 import br.com.campanhas.app.dto.response.CampanhaResponse;
 import br.com.campanhas.app.entities.Associado;
 import br.com.campanhas.app.entities.Campanha;
-import br.com.campanhas.app.exceptions.AssociadoNotExistException;
-import br.com.campanhas.app.exceptions.CampanhaDuplicadaException;
-import br.com.campanhas.app.exceptions.CampanhaNotExistException;
-import br.com.campanhas.app.exceptions.NomeTimeNotExistException;
+import br.com.campanhas.app.exceptions.*;
 import br.com.campanhas.app.mappers.MapperCampanhaToCampanhaResponse;
 import br.com.campanhas.app.repositories.AssociadoRepository;
 import lombok.RequiredArgsConstructor;
@@ -75,9 +72,7 @@ public class CampanhaService {
 		}
 	}
 
-	//ENTENDIMENTO > SIMPLICIDADE
-	//SIMPLICIDADE > COMPLEXO
-	public boolean validacoesDiversas(CampanhaRequest campanhas) {
+		public boolean validacoesDiversas(CampanhaRequest campanhas) {
 		List<Campanha> listaTodasCampanhas = campanhaRepository.findAll();
 
 		for (Campanha seleciona : listaTodasCampanhas) {
@@ -158,21 +153,32 @@ public class CampanhaService {
 
 	public CampanhaResponse adicionarAssociado(Long idAssociado, Long idCampanha){
 
-		Campanha campanha = campanhaRepository.findById(idCampanha).get();
-		if (campanha == null) {
-			throw new CampanhaNotExistException("Campanha não existe.");
+		Optional<Campanha> optCampanha = campanhaRepository.findById(idCampanha);
+
+		if (!optCampanha.isPresent()) {
+			throw new CampanhaNotExistException("Campanha não existe. IdCampanha = " + idCampanha);
 		}
 
 		Associado associado = associadoRepository.findById(idAssociado).get();
 
-		if(associado == null){
-			throw new AssociadoNotExistException("Associado não possui cadastro.");
+		if(Objects.isNull(associado)){
+			throw new AssociadoNotExistException("Associado não possui cadastro. IdAssociado = " + idAssociado);
+		}
+
+		Campanha campanha = optCampanha.get();
+		if( !campanha.getClube().getNome().equals( associado.getClube().getNome() ) ){
+			throw new TimeDiferenteException("Não foi possivel vincular associado a campanha! Nome do clube A: "
+					+ campanha.getClube().getNome() + " Nome do B: " + associado.getClube().getNome());
 		}
 
 		campanha.getAssociados().add(associado);
+
 		campanhaRepository.save(campanha);
+
 		CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(campanha);
-		 return campanhaResponse;
+		campanhaResponse.setMessage("Campanha vinculada ao associado com sucesso!");
+
+		return campanhaResponse;
 	}
 }
 

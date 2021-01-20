@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AssociadoRepository extends JpaRepository<Associado, Long> {
-        public Associado findByNomeCompletoAssociadoIgnoreCase(String nomeCompletoAssociado);
+        public Associado findByNomeCompletoIgnoreCase(String nomeCompleto);
 
 
 }

@@ -60,7 +60,11 @@ public class CampanhaController {
 	@PostMapping("/{idCampanha}/add/{idAssociado}")
 	public ResponseEntity<CampanhaResponse> adicionaAssociado(@PathVariable Long idCampanha, Long idAssociado){
 		CampanhaResponse campanhaResponse = service.adicionarAssociado(idAssociado, idCampanha);
-		return ResponseEntity.ok(campanhaResponse);
-	}
 
+		URI location = ServletUriComponentsBuilder
+				.fromCurrentRequest()
+				.buildAndExpand(campanhaResponse.getId()).toUri();
+
+		return ResponseEntity.created(location).body(campanhaResponse);
+	}
 }

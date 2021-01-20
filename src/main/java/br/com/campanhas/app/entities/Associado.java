@@ -23,8 +23,4 @@ public class Associado {
     @ManyToOne
     @JoinColumn(name = "IdClubeDoCoracao")
     private Clube clube;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "IdCampanha")
-//    private Campanha campanha;
 }
