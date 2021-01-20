@@ -14,8 +14,8 @@ public class Associado {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nomeCompletoAssociado;
-    private String emailAssociado;
+    private String nomeCompleto;
+    private String email;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate dataDeNascimento;

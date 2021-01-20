@@ -1,5 +1,6 @@
 package br.com.campanhas.app.dto.response;
 
+import br.com.campanhas.app.entities.Clube;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -9,8 +10,9 @@ import java.time.LocalDate;
 public class AssociadoResponse {
 
     private Long id;
-    private String nomeCompletoAssociado;
-    private String emailAssociado;
+    private String nomeCompleto;
+    private String email;
+    private Clube clube;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate dataDeNascimento;

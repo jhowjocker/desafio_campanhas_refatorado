@@ -37,20 +37,17 @@ public class AssociadoService {
             throw new AssociadoDuplicadoException("Email já cadastrado! Tente novamente.");
         }
 
-
-
         Clube clube = clubeRepository.findByNomeIgnoreCase(associadoRequest.getTime());
 
         if (Objects.isNull(clube)) {
             throw new NomeTimeNotExistException("Nome do time não existe!");
         }
 
-        associado.setNomeCompletoAssociado(associadoRequest.getNomeCompleto().toUpperCase());
-        associado.setEmailAssociado(associadoRequest.getEmail());
+        associado.setNomeCompleto(associadoRequest.getNomeCompleto().toUpperCase());
+        associado.setEmail(associadoRequest.getEmail());
         associado.setDataDeNascimento(associadoRequest.getDataNascimento());
         associado.setClube(clube);
-//        associado.setId(campanhaAssociado(campanha);
-//
+
         associadoRepository.save(associado);
 
         message += "Associado inserido com sucesso!";
@@ -64,7 +61,6 @@ public class AssociadoService {
     public void verificaNomeAssociado(String nomeAssociado) {
         Associado associado = associadoRepository.findByNomeCompletoAssociadoIgnoreCase(nomeAssociado);
 
-
         if (Objects.nonNull(associado)) {
             throw new AssociadoDuplicadoException("Cadastro existente!");
         }
@@ -73,7 +69,7 @@ public class AssociadoService {
     public boolean verificaEmailAssociado(AssociadoRequest associadoRequest) {
         List<Associado> listaDeEmailsBancoDeDados = associadoRepository.findAll();
         for (Associado seleciona : listaDeEmailsBancoDeDados) {
-            if (seleciona.getEmailAssociado().equals(associadoRequest.getEmail())) {
+            if (seleciona.getEmail().equals(associadoRequest.getEmail())) {
                 return true;
             }
         }
@@ -112,11 +108,10 @@ public class AssociadoService {
         }
 
         associado.setId(id);
-        associado.setNomeCompletoAssociado(associadoRequest.getNomeCompleto().toUpperCase());
+        associado.setNomeCompleto(associadoRequest.getNomeCompleto().toUpperCase());
         associado.setDataDeNascimento(associadoRequest.getDataNascimento());
-        associado.setEmailAssociado(associadoRequest.getEmail());
+        associado.setEmail(associadoRequest.getEmail());
         associado.setClube(clube);
-//        associado.setCampanha(associado.getCampanha());
 
         associadoRepository.save(associado);
 
