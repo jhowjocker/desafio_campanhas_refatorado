@@ -1,9 +1,11 @@
 package br.com.campanhas.app.dto.response;
 
+import br.com.campanhas.app.entities.Associado;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class CampanhaResponse {
@@ -20,4 +22,6 @@ public class CampanhaResponse {
     private ClubeResponse clube;
 
     private String message;
+
+    private List<AssociadoResponse> associados;
 }

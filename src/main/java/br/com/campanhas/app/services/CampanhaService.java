@@ -4,10 +4,14 @@ import java.time.LocalDate;
 import java.util.*;
 
 import br.com.campanhas.app.dto.response.CampanhaResponse;
+import br.com.campanhas.app.entities.Associado;
 import br.com.campanhas.app.entities.Campanha;
+import br.com.campanhas.app.exceptions.AssociadoNotExistException;
 import br.com.campanhas.app.exceptions.CampanhaDuplicadaException;
+import br.com.campanhas.app.exceptions.CampanhaNotExistException;
 import br.com.campanhas.app.exceptions.NomeTimeNotExistException;
 import br.com.campanhas.app.mappers.MapperCampanhaToCampanhaResponse;
+import br.com.campanhas.app.repositories.AssociadoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +30,7 @@ public class CampanhaService {
 
 	private final MapperCampanhaToCampanhaResponse mapperCampanhaToCampanhaResponse;
 
-	private Object conexao;
+	private final AssociadoRepository associadoRepository;
 
 	public CampanhaResponse inserir(CampanhaRequest campanhaRequest) {
 		String message = "";
@@ -151,4 +155,24 @@ public class CampanhaService {
 	public void deletar(Long id) {
 		campanhaRepository.deleteById(id);
 	}
+
+	public CampanhaResponse adicionarAssociado(Long idAssociado, Long idCampanha){
+
+		Campanha campanha = campanhaRepository.findById(idCampanha).get();
+		if (campanha == null) {
+			throw new CampanhaNotExistException("Campanha não existe.");
+		}
+
+		Associado associado = associadoRepository.findById(idAssociado).get();
+
+		if(associado == null){
+			throw new AssociadoNotExistException("Associado não possui cadastro.");
+		}
+
+		campanha.getAssociados().add(associado);
+		campanhaRepository.save(campanha);
+		CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(campanha);
+		 return campanhaResponse;
+	}
 }
+

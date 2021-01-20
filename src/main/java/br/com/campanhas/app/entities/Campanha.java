@@ -1,13 +1,11 @@
 package br.com.campanhas.app.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -30,4 +28,15 @@ public class Campanha {
 	@ManyToOne
 	@JoinColumn(name = "IdClube")
 	private Clube clube;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "campanha_associados",
+			joinColumns = {
+				@JoinColumn(name = "id_campanha", referencedColumnName = "id", nullable = false, updatable = false)
+			},
+			inverseJoinColumns = {
+				@JoinColumn(name = "id_associado", referencedColumnName = "id", nullable = false, updatable = false)
+			}
+	)
+	private List<Associado> associados = new ArrayList<>();
 }

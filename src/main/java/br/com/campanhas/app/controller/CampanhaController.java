@@ -57,4 +57,10 @@ public class CampanhaController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@PostMapping("/{idCampanha}/add/{idTorcedor}")
+	public ResponseEntity<CampanhaResponse> adicionaAssociado(@PathVariable Long idCampanha, Long idTorcedor){
+		CampanhaResponse campanhaResponse = service.adicionarAssociado(idTorcedor, idCampanha);
+		return ResponseEntity.ok(campanhaResponse);
+	}
+
 }

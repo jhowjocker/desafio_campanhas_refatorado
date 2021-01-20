@@ -7,5 +7,5 @@ import br.com.campanhas.app.entities.Campanha;
 
 @Repository
 public interface CampanhasRepository extends  JpaRepository<Campanha, Long> {
-    public Campanha findByNomeIgnoreCase(String nome);
+        public Campanha findByNomeIgnoreCase(String nome);
 }
