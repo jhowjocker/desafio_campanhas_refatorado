@@ -12,25 +12,25 @@ import br.com.campanhas.app.repositories.ClubeRepository;
 @RequiredArgsConstructor
 public class InicializationConfig {
 
-	private final ClubeRepository clubeRepository;
-
-	@PostConstruct
-	public void inicializacao() {
-		
-		if (clubeRepository.count() > 0) {
-			return;			
-		}
-		
-		Clube clube = new Clube();
-		clube.setNome("Corinthians");
-		clubeRepository.save(clube);
-		
-		clube = new Clube();
-		clube.setNome("Palmeiras");
-		clubeRepository.save(clube);
-		
-		clube = new Clube();
-		clube.setNome("Santos");
-		clubeRepository.save(clube);
-	}
+//	private final ClubeRepository clubeRepository;
+//
+//	@PostConstruct
+//	public void inicializacao() {
+//
+//		if (clubeRepository.count() > 0) {
+//			return;
+//		}
+//
+//		Clube clube = new Clube();
+//		clube.setNome("Corinthians");
+//		clubeRepository.save(clube);
+//
+//		clube = new Clube();
+//		clube.setNome("Palmeiras");
+//		clubeRepository.save(clube);
+//
+//		clube = new Clube();
+//		clube.setNome("Santos");
+//		clubeRepository.save(clube);
+//	}
 }

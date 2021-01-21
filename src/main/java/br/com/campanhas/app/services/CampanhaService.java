@@ -21,164 +21,164 @@ import br.com.campanhas.app.dto.request.CampanhaRequest;
 @RequiredArgsConstructor
 public class CampanhaService {
 
-	private final CampanhasRepository campanhaRepository;
+    private final CampanhasRepository campanhaRepository;
 
-	private final ClubeRepository clubeRepository;
+    private final ClubeRepository clubeRepository;
 
-	private final MapperCampanhaToCampanhaResponse mapperCampanhaToCampanhaResponse;
+    private final MapperCampanhaToCampanhaResponse mapperCampanhaToCampanhaResponse;
 
-	private final AssociadoRepository associadoRepository;
+    private final AssociadoRepository associadoRepository;
 
-	public CampanhaResponse inserir(CampanhaRequest campanhaRequest) {
-		String message = "";
+    public CampanhaResponse inserir(CampanhaRequest campanhaRequest) {
+        String message = "";
 
-		Campanha camp = new Campanha();
+        Campanha camp = new Campanha();
 
-		verificaNome(campanhaRequest.getNome());
+        verificaNome(campanhaRequest.getNome());
 
-		if ( validacoesDiversas(campanhaRequest) ) {
-			message = "Data da vigencia já existe. Será acrescentado um dia na data final "
-					+ "da campanha já cadastrada e será mantido a data cadastrada agora!";
+        if (validacoesDiversas(campanhaRequest)) {
+            message = "Data da vigencia já existe. Será acrescentado um dia na data final "
+                    + "da campanha já cadastrada e será mantido a data cadastrada agora!";
 
-			adicionaDia();
-		}
+            adicionaDia();
+        }
 
-		Clube clube = clubeRepository.findByNomeIgnoreCase(campanhaRequest.getTime());
+        Clube clube = clubeRepository.findByNomeIgnoreCase(campanhaRequest.getTime());
 
-		if ( Objects.isNull(clube) ) {
-			throw new NomeTimeNotExistException("Nome do time não existe!");
-		}
+        if (Objects.isNull(clube)) {
+            throw new NomeTimeNotExistException("Nome do time não existe!");
+        }
 
-		camp.setNome(campanhaRequest.getNome().toUpperCase());
-		camp.setClube(clube);
-		camp.setDataInicio(campanhaRequest.getDataInicio());
-		camp.setDataFim(campanhaRequest.getDataFim());
+        camp.setNome(campanhaRequest.getNome().toUpperCase());
+        camp.setClube(clube);
+        camp.setDataInicio(campanhaRequest.getDataInicio());
+        camp.setDataFim(campanhaRequest.getDataFim());
 
-		campanhaRepository.save(camp);
+        campanhaRepository.save(camp);
 
-		message += " Campanha inserida com sucesso.";
+        message += " Campanha inserida com sucesso.";
 
-		CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(camp);
-		campanhaResponse.setMessage(message);
+        CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(camp);
+        campanhaResponse.setMessage(message);
 
-		return campanhaResponse;
-	}
+        return campanhaResponse;
+    }
 
-	public void verificaNome(String nomeCampanha) {
-		Campanha campanha = campanhaRepository.findByNomeIgnoreCase(nomeCampanha);
+    public void verificaNome(String nomeCampanha) {
+        Campanha campanha = campanhaRepository.findByNomeIgnoreCase(nomeCampanha);
 
-		if( Objects.nonNull(campanha) ){
-			throw new CampanhaDuplicadaException("Campanha existente. Tente outro nome!");
-		}
-	}
+        if (Objects.nonNull(campanha)) {
+            throw new CampanhaDuplicadaException("Campanha existente. Tente outro nome!");
+        }
+    }
 
-		public boolean validacoesDiversas(CampanhaRequest campanhas) {
-		List<Campanha> listaTodasCampanhas = campanhaRepository.findAll();
+    public boolean validacoesDiversas(CampanhaRequest campanhas) {
+        List<Campanha> listaTodasCampanhas = campanhaRepository.findAll();
 
-		for (Campanha seleciona : listaTodasCampanhas) {
-			if (seleciona.getDataFim().equals(campanhas.getDataFim())) {
-				return true;
-			}
-		}
+        for (Campanha seleciona : listaTodasCampanhas) {
+            if (seleciona.getDataFim().equals(campanhas.getDataFim())) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public List<Campanha> adicionaDia() {
-		List<Campanha> novaListaCampanha = new ArrayList<>();
+    public List<Campanha> adicionaDia() {
+        List<Campanha> novaListaCampanha = new ArrayList<>();
 
-		List<Campanha> listaCampnhaBancoDeDados = campanhaRepository.findAll();
+        List<Campanha> listaCampnhaBancoDeDados = campanhaRepository.findAll();
 
-		for (Campanha seleciona : listaCampnhaBancoDeDados) {
-			seleciona.setDataFim(seleciona.getDataFim().plusDays(1));
-			Campanha save = campanhaRepository.save(seleciona);
-		}
+        for (Campanha seleciona : listaCampnhaBancoDeDados) {
+            seleciona.setDataFim(seleciona.getDataFim().plusDays(1));
+            Campanha save = campanhaRepository.save(seleciona);
+        }
 
-		return novaListaCampanha;
-	}
+        return novaListaCampanha;
+    }
 
-	public List<CampanhaResponse> listar() {
-		List<CampanhaResponse> listaCampanhaResponse = new ArrayList<>();
+    public List<CampanhaResponse> listar() {
+        List<CampanhaResponse> listaCampanhaResponse = new ArrayList<>();
 
-		List<Campanha> ListaCampanhaBanco = campanhaRepository.findAll();
+        List<Campanha> ListaCampanhaBanco = campanhaRepository.findAll();
 
-		for (Campanha campanha : ListaCampanhaBanco) {
-			if (campanha.getDataFim().isAfter(LocalDate.now())) {
-				Campanha campanhaSave = campanhaRepository.save(campanha);
+        for (Campanha campanha : ListaCampanhaBanco) {
+            if (campanha.getDataFim().isAfter(LocalDate.now())) {
+                Campanha campanhaSave = campanhaRepository.save(campanha);
 
-				CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(campanhaSave);
+                CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(campanhaSave);
 
-				listaCampanhaResponse.add(campanhaResponse);
+                listaCampanhaResponse.add(campanhaResponse);
 
-			}
-		}
+            }
+        }
 
-		return listaCampanhaResponse;
-	}
+        return listaCampanhaResponse;
+    }
 
-	public CampanhaResponse obterCampanha(Long id) {
-		Campanha campanha = campanhaRepository.getOne(id);
+    public CampanhaResponse obterCampanha(Long id) {
+        Campanha campanha = campanhaRepository.getOne(id);
 
-		CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(campanha);
+        CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(campanha);
 
-		return campanhaResponse;
-	}
+        return campanhaResponse;
+    }
 
-	public CampanhaResponse atualizar(Long id, CampanhaRequest campanhaRequest) {
-		Campanha campanha = campanhaRepository.getOne(id);
+    public CampanhaResponse atualizar(Long id, CampanhaRequest campanhaRequest) {
+        Campanha campanha = campanhaRepository.getOne(id);
 
-		Clube clube = clubeRepository.findByNomeIgnoreCase(campanhaRequest.getTime());
+        Clube clube = clubeRepository.findByNomeIgnoreCase(campanhaRequest.getTime());
 
-		if ( Objects.isNull(clube) ) {
-			throw new NomeTimeNotExistException("Nome do time não existe!");
-		}
+        if (Objects.isNull(clube)) {
+            throw new NomeTimeNotExistException("Nome do time não existe!");
+        }
 
-		campanha.setId(id);
-		campanha.setNome(campanhaRequest.getNome().toUpperCase());
-		campanha.setClube(clube);
-		campanha.setDataInicio(campanhaRequest.getDataInicio());
-		campanha.setDataFim(campanhaRequest.getDataFim());
+        campanha.setId(id);
+        campanha.setNome(campanhaRequest.getNome().toUpperCase());
+        campanha.setClube(clube);
+        campanha.setDataInicio(campanhaRequest.getDataInicio());
+        campanha.setDataFim(campanhaRequest.getDataFim());
 
-		campanhaRepository.save(campanha);
+        campanhaRepository.save(campanha);
 
-		CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(campanha);
-		campanhaResponse.setMessage("Campanha atualizada com sucesso!");
+        CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(campanha);
+        campanhaResponse.setMessage("Campanha atualizada com sucesso!");
 
-		return campanhaResponse;
-	}
+        return campanhaResponse;
+    }
 
-	public void deletar(Long id) {
-		campanhaRepository.deleteById(id);
-	}
+    public void deletar(Long id) {
+        campanhaRepository.deleteById(id);
+    }
 
-	public CampanhaResponse adicionarAssociado(Long idAssociado, Long idCampanha){
+    public CampanhaResponse adicionarAssociado(Long idAssociado, Long idCampanha) {
 
-		Optional<Campanha> optCampanha = campanhaRepository.findById(idCampanha);
+        Optional<Campanha> optCampanha = campanhaRepository.findById(idCampanha);
 
-		if (!optCampanha.isPresent()) {
-			throw new CampanhaNotExistException("Campanha não existe. IdCampanha = " + idCampanha);
-		}
+        if (!optCampanha.isPresent()) {
+            throw new CampanhaNotExistException("Campanha não existe. IdCampanha = " + idCampanha);
+        }
 
-		Associado associado = associadoRepository.findById(idAssociado).get();
+        Associado associado = associadoRepository.findById(idAssociado).get();
 
-		if(Objects.isNull(associado)){
-			throw new AssociadoNotExistException("Associado não possui cadastro. IdAssociado = " + idAssociado);
-		}
+        if (Objects.isNull(associado)) {
+            throw new AssociadoNotExistException("Associado não cadastrado. IdAssociado = " + idAssociado);
+        }
 
-		Campanha campanha = optCampanha.get();
-		if( !campanha.getClube().getNome().equals( associado.getClube().getNome() ) ){
-			throw new TimeDiferenteException("Não foi possivel vincular associado a campanha! Nome do clube A: "
-					+ campanha.getClube().getNome() + " Nome do B: " + associado.getClube().getNome());
-		}
+        Campanha campanha = optCampanha.get();
+        if (!campanha.getClube().getNome().equals(associado.getClube().getNome())) {
+            throw new TimeDiferenteException("Não foi possivel vincular associado a campanha! Nome do clube A: "
+                    + campanha.getClube().getNome() + " Nome do B: " + associado.getClube().getNome());
+        }
 
-		campanha.getAssociados().add(associado);
+        campanha.getAssociados().add(associado);
 
-		campanhaRepository.save(campanha);
+        campanhaRepository.save(campanha);
 
-		CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(campanha);
-		campanhaResponse.setMessage("Campanha vinculada ao associado com sucesso!");
+        CampanhaResponse campanhaResponse = mapperCampanhaToCampanhaResponse.toDto(campanha);
+        campanhaResponse.setMessage("Campanha vinculada ao associado com sucesso!");
 
-		return campanhaResponse;
-	}
+        return campanhaResponse;
+    }
 }
 

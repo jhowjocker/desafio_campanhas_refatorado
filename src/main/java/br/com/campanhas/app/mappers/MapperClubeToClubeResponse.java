@@ -6,5 +6,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface MapperClubeToClubeResponse {
-    ClubeResponse toResponse(Clube clube);
+    ClubeResponse toDtoResponse(Clube clube);
 }

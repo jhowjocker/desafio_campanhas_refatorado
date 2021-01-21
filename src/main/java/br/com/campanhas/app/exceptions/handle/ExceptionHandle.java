@@ -77,4 +77,15 @@ public class ExceptionHandle {
 
         return ResponseEntity.status(httpStatus).body(baseResponse);
     }
+
+    @ExceptionHandler(ClubeDuplicadoException.class)
+    public ResponseEntity<BaseResponse> handle(HttpServletRequest req, ClubeDuplicadoException e) {
+        BaseResponse baseResponse = new BaseResponse();
+        HttpStatus httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+
+        baseResponse.setStatusCode(httpStatus.value());
+        baseResponse.setMessage(e.getMessage());
+
+        return ResponseEntity.status(httpStatus).body(baseResponse);
+    }
 }
